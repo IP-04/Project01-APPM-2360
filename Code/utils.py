@@ -80,7 +80,7 @@ def vectorfield(f1, f2, X, Y, params):
     dyu = dy/norm
     dxu = dx/norm
     
-    plt.quiver(x,y,dxu,dyu, width=0.002, scale=100)
+    plt.quiver(x,y,dxu,dyu, width=0.002, scale=120)
     plt.show()
 
 def plot_phase_plane(params):
@@ -96,6 +96,24 @@ def plot_phase_plane(params):
 
     for sol in equilibrium_solutions:
         plt.plot(sol[0], sol[1], 'ro')  # Equilibrium points
+
+    plt.xlabel('x1')
+    plt.ylabel('x2')
+    plt.title('Phase Plane')
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+def plot_phase_plane2(elements, x1):
+    vnulls, hnulls = elements
+
+    plt.plot(x1, hnulls[0], label='h-nullcline', color='blue')
+    plt.axhline(y=vnulls[0], label='v-nullcline', color='red')
+    plt.axhline(y=hnulls[1], color="blue")
+    plt.axvline(x=vnulls[1], color='red')
+
+    # for sol in equilibrium_solutions:
+    #     plt.plot(sol[0], sol[1], 'ro')  # Equilibrium points
 
     plt.xlabel('x1')
     plt.ylabel('x2')

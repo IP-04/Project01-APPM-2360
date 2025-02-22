@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
-from utils import plot_vector_field, vectorfield, dx1_dt, dx2_dt
+from utils import plot_vector_field, vectorfield, dx1_dt, dx2_dt, plot_phase_plane2
 
 def task_1_nullclines_and_equilibrium():
     """
@@ -43,19 +43,9 @@ def task_2b_solve_ode_system():
     t_span = (0, 20)
     t_eval = np.linspace(0, 20, 2000)
     params = (1.5, 1.1, 2.5, 1.4, 0.5)
-    print(initial_conditions[1])
-    solutions = []
-    sol = solve_ivp(logistic_predator_prey, t_span, f0, t_eval=t_eval, args=params)
-    t = sol.t
-    x1 = sol.y[0]
-    x2 = sol.y[1]
-    plt.plot(t, x1)
-    plt.plot(t, x2)
-    # for i in initial_conditions:
-    #     sol = solve_ivp(logistic_predator_prey, t_span, f0, t_eval=t_eval, args=params)
-    #     solutions.append(sol)
+    solutions = solve_ivp(logistic_predator_prey, t_span, f0, t_eval=t_eval, args=params)
 
-    # return solutions
+    return solutions
 
 def task_2c_phase_plane_and_trajectories(solutions):
     """
@@ -66,14 +56,14 @@ def task_2c_phase_plane_and_trajectories(solutions):
     iv. Solution trajectories
     """
     # **Plot phase plane setup using utils function (nullclines, vector field, equilibrium points)**
-    params = {
-        'alpha': 1.5,
-        'beta': 1.1,
-        'gamma': 2.5,
-        'delta': 1.4,
-        'kappa': 0.5
-    }
-    plot_phase_plane(params, solutions)
+    params = (1.5, 1.1, 2.5, 1.4, 0.5)
+    alpha, beta, gamma, delta, kappa = params
+    x1 = np.arange(0, 5, 0.2)
+    vnulls = [alpha/beta, 0]
+    hnulls = [kappa*(1-(x1*(delta/gamma))), 0]
+
+    elements = (vnulls, hnulls)
+    plot_phase_plane2(elements, x1)
     print("Task C.2(c) completed: Phase plane with trajectories and equilibrium points plotted.")
 
 def task_3_component_curves(solutions):
@@ -106,7 +96,7 @@ def main():
     #task_1_nullclines_and_equilibrium()
     task_2a_vector_field()
     solutions = task_2b_solve_ode_system()
-    #task_2c_phase_plane_and_trajectories(solutions)
+    task_2c_phase_plane_and_trajectories(solutions)
     #task_3_component_curves(solutions)
 
 if __name__ == "__main__":
