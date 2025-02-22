@@ -47,7 +47,42 @@ def plot_solutions(t_exact, x_exact, solutions, h_values):
     plt.grid(True)
     plt.savefig("plots/task_a_plot.png")
     plt.show()
+
+def harvesting_function(x, p, q):
+        return (p * x**2) / (q + x**2)
+
+def dirfield(f, X, Y):
+    #vector must have step size pre-specified
+    x, y = np.meshgrid(X, Y)
+    dy = f(y)
+    dx = np.ones_like(dy)
     
+    norm = np.sqrt(dx**2 + dy**2)
+    dyu = dy/norm
+    dxu = dx/norm
+
+    plt.quiver(x,y,dxu,dyu, width=0.002)
+    plt.show()
+
+def dx1_dt(x1, x2, alpha, beta, gamma, delta, kappa):
+        y = (-alpha*x1) + (beta*x1*x2)
+        return y
+def dx2_dt(x1, x2, alpha, beta, gamma, delta, kappa):
+        y = x2*gamma*(1-kappa*x2) - delta*x1*x2
+        return y
+def vectorfield(f1, f2, X, Y, params):
+    a, b, g, d, k = params
+    x, y = np.meshgrid(X, Y)
+    dy = f2(x, y, a, b, g, d, k)
+    dx = f1(x, y, a, b, g, d, k)
+    
+    norm = np.sqrt(x**2 + y**2)
+    dyu = dy/norm
+    dxu = dx/norm
+    
+    plt.quiver(x,y,dxu,dyu, width=0.002, scale=100)
+    plt.show()
+
 def plot_phase_plane(params):
     v_nullcline, h_nullcline, equilibrium_solutions = task_2_nullclines_and_equilibrium()
     alpha, beta, gamma, delta = params['alpha'], params['beta'], params['gamma'], params['delta']
