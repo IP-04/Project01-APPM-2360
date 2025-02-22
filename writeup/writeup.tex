@@ -1,0 +1,85 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, graphicx, hyperref, float}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\title{Project 1: A Mathematical Investigation of Populations and Predator-Prey Dynamics}
+\author{Group Members: Isaias Perez \\
+Seamus Healy\\
+Marius Grimsland \\ APPM 2360 - CU Boulder}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This report investigates population dynamics through mathematical modeling, focusing on predator-prey interactions using the logistic equation and Lotka-Volterra systems. The study utilizes analytical methods and numerical simulations to explore population equilibria and stability.
+\end{abstract}
+
+\section{Introduction}
+Provide a brief introduction to the project, highlighting the motivation behind studying predator-prey dynamics and the significance of understanding population changes over time. Mention key concepts, such as carrying capacity, intrinsic growth rate, and predation effects.
+
+\section{Modeling Individual Populations: The Logistic Equation}
+\subsection{Task Set A}
+\begin{enumerate}
+    \item Discuss the units of the parameters $r$ and $L$.
+    \item Derive and present the equilibrium solutions of the logistic equation:
+    \begin{equation}
+        \frac{dx}{dt} = r\left(1 - \frac{x}{L}\right)x
+    \end{equation}
+    Include separation of variables and the explicit solution $x(t)$.
+    \item Numerical solutions using Euler's method:
+    \begin{itemize}
+        \item Present plots comparing solutions for different step sizes $h$.
+        \item Discuss accuracy and efficiency.
+    \end{itemize}
+    \item Classify the equation with harvesting:
+    \begin{equation}
+        \frac{dx}{dt} = r\left(1 - \frac{x}{L}\right)x - \frac{px^2}{q + x^2}
+    \end{equation}
+    \item Analyze the behavior of $H(x)$ graphically.
+    \item Numerical analysis for different initial conditions.
+\end{enumerate}
+
+\section{Modeling Population Interactions: The Lotka-Volterra System}
+\subsection{Task Set B}
+\begin{enumerate}
+    \item Classify the Lotka-Volterra system:
+    \begin{align}
+        \frac{dx_1}{dt} &= -\alpha x_1 + \beta x_1 x_2 \\
+        \frac{dx_2}{dt} &= \gamma x_2 - \delta x_1 x_2
+    \end{align}
+    \item Derive nullclines and equilibrium points.
+    \item Present vector field plots and analyze phase plane behavior.
+    \item Discuss component curves $x_1(t)$ and $x_2(t)$.
+\end{enumerate}
+
+\section{The Logistic Predator-Prey Equations}
+\subsection{Task Set C}
+\begin{enumerate}
+    \item Derive nullclines and equilibrium solutions analytically.
+    \item Use numerical simulations to analyze system behavior for different initial conditions.
+    \item Discuss stability and compare solution curves.
+\end{enumerate}
+
+\section{Model Comparison}
+Compare and contrast the Lotka-Volterra and Logistic Predator-Prey models. Discuss their strengths, weaknesses, and possible modifications to improve model accuracy.
+
+\section{Conclusion}
+Summarize key findings, highlighting significant results and insights gained from the investigation. Reiterate the importance of mathematical modeling in understanding predator-prey dynamics.
+
+\section*{Appendix}
+\subsection*{Code}
+Include all relevant code here, formatted properly and explained briefly where necessary.
+
+\subsection*{Extended Calculations}
+Present any lengthy derivations, additional graphs, or numerical solutions that were omitted from the main body of the report.
+
+\section*{References}
+\begin{enumerate}
+    \item Predators and Prey: A Case of Imbalance between Mountain Lions and the North Kings Deer Herd. Johnston Ridge Observatory - US Forest Service. \\ \url{https://www.fs.usda.gov/psw/publications/Popular/mtnlions.html}
+    \item Predator-Prey Dynamics: Lotka-Volterra. \\ \url{http://www.tiem.utk.edu/~gross/bioed/bealsmodules/predator-prey.html}
+\end{enumerate}
+
+\end{document}
+
