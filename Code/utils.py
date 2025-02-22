@@ -47,3 +47,25 @@ def plot_solutions(t_exact, x_exact, solutions, h_values):
     plt.grid(True)
     plt.savefig("plots/task_a_plot.png")
     plt.show()
+    
+def plot_phase_plane(params):
+    v_nullcline, h_nullcline, equilibrium_solutions = task_2_nullclines_and_equilibrium()
+    alpha, beta, gamma, delta = params['alpha'], params['beta'], params['gamma'], params['delta']
+    
+    x1 = np.linspace(0, 5, 400)
+    x2_v_nullcline = [v_nullcline[0].subs({'alpha': alpha, 'beta': beta, 'x1': x}) for x in x1]
+    x2_h_nullcline = [h_nullcline[0].subs({'gamma': gamma, 'delta': delta, 'x1': x}) for x in x1]
+
+    plt.plot(x1, x2_v_nullcline, label='v-nullcline')
+    plt.plot(x1, x2_h_nullcline, label='h-nullcline')
+
+    for sol in equilibrium_solutions:
+        plt.plot(sol[0], sol[1], 'ro')  # Equilibrium points
+
+    plt.xlabel('x1')
+    plt.ylabel('x2')
+    plt.title('Phase Plane')
+    plt.legend()
+    plt.grid()
+    plt.show()
+
