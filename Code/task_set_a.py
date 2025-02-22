@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from utils import euler_method, exact_solution, plot_solutions
+from utils import euler_method, exact_solution, plot_solutions, harvesting_function, dirfield
+from scipy.optimize import fsolve
 
 def task_1_units():
     """
@@ -36,7 +37,7 @@ def task_3_euler_method_and_plots():
     # Parameters for mountain lion population
     r = 0.65
     L = 5.4
-    x0 = 6  # Initial population (in dozens of mountain lions)
+    x0 = .5  # Initial population (in dozens of mountain lions)
     t_end = 20
     h_values = [0.5, 0.1, 0.01]
 
@@ -86,8 +87,8 @@ def task_5_behavior_of_harvesting_function():
     """
     Task A.5: Explore the behavior of the harvesting function H(x) and plot the curves.
     """
-    def harvesting_function(x, p, q):
-        return (p * x**2) / (q + x**2)
+    #def harvesting_function(x, p, q):
+        #return (p * x**2) / (q + x**2)
 
     x_values = np.linspace(0, 10, 500)
     parameters = [(1, 1), (1, 3), (1, 5), (3, 1), (3, 3), (3, 5), (5, 1), (5, 3), (5, 5)]
@@ -114,7 +115,50 @@ def task_6_equilibrium_solutions_and_euler():
     # - Find equilibrium solutions using numerical solvers (e.g., scipy.optimize.fsolve)
     # - Compute Euler’s method for initial deer populations of 84, 24, 18, and 6
     # - Plot results along with the direction field and equilibrium points
-    pass  # Placeholder
+    rd = 0.65
+    Ld = 8.1
+    p = 1.2
+    q = 1
+    h = 0.1
+    pop = [7, 2, 2.5, 0.5]
+    t_grid = np.arange(0, 30, h)
+    x_sol = np.zeros_like(t_grid)
+    x_grid = np.linspace(0, 8, 500)
+    H = harvesting_function(x_grid, p, q)
+    def fxt(x):
+        y = rd*x*(1-(x/Ld))-harvesting_function(x, p, q)
+        return y
+    guess = [0, 0.7, 5]
+    roots = np.array([])
+    for i in range(len(guess)):
+        root = fsolve(fxt, guess[i])
+        roots = np.append(roots, root)
+    print("roots:", roots)
+
+    fig, ax = plt.subplots()
+    for i in range(len(pop)):
+        x_sol[0] = pop[i]
+    
+        for j in range(len(t_grid)-1):
+            H = harvesting_function(x_sol[j], p, q)
+            x_sol[j+1] = x_sol[j] + h*(fxt(x_sol[j]))
+        
+        ax.plot(t_grid, x_sol, label="%g Dozen Deer" % pop[i])
+        ax.set_title("Deer Population Over Time (Differing Initial Values of Deer)")
+        ax.set_xlabel("Time (yrs)")
+        ax.set_ylabel("Deer Population (dozens)")
+        ax.legend(fontsize="7.5")
+
+    for i in range(len(roots)):
+        ax.axhline(y=roots[i], color='#39FF14', linestyle="dashed")
+
+    x = np.arange(0, 30, 2.5)
+    y = np.arange(0, 7, .5)
+    dirfield(fxt, x, y)
+    plt.savefig("plots/task_a_harvesting_with_dirfield.png")
+
+
+    
 
 def main():
     # Execute each task sequentially
@@ -124,7 +168,7 @@ def main():
     task_4_classify_differential_eq()
     task_5_behavior_of_harvesting_function()
     # Uncomment the following line once Task 6 is implemented
-    # task_6_equilibrium_solutions_and_euler()
+    task_6_equilibrium_solutions_and_euler()
 
 if __name__ == "__main__":
     main()

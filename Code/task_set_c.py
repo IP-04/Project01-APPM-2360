@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
-from utils import plot_vector_field, plot_phase_plane, find_nullclines
+from utils import plot_vector_field, vectorfield, dx1_dt, dx2_dt
 
 def task_1_nullclines_and_equilibrium():
     """
@@ -21,15 +21,10 @@ def task_2a_vector_field():
     Parameters: α = 1.5, β = 1.1, γ = 2.5, δ = 1.4, κ = 0.5
     Region: 0 ≤ x1 ≤ 5, 0 ≤ x2 ≤ 5
     """
-    params = {
-        'alpha': 1.5,
-        'beta': 1.1,
-        'gamma': 2.5,
-        'delta': 1.4,
-        'kappa': 0.5
-    }
-
-    plot_vector_field(params, x_range=(0, 5), y_range=(0, 5))
+    params = (1.5, 1.1, 2.5, 1.4, 0.5)
+    x1 = np.arange(0, 5, 0.2)
+    x2 = np.arange(0, 5, 0.2)
+    vectorfield(dx1_dt, dx2_dt, x1, x2, params)
     print("Task C.2(a) completed: Vector field plotted.")
 
 def task_2b_solve_ode_system():
@@ -38,23 +33,29 @@ def task_2b_solve_ode_system():
     Initial conditions: (x1(0), x2(0)) = (5, 1) and (x1(0), x2(0)) = (1, 5)
     Time interval: t ∈ [0, 20] with a stepsize of h = 0.01
     """
-    def logistic_predator_prey(t, z, alpha, beta, gamma, delta, kappa):
-        x1, x2 = z
-        dx1_dt = -alpha * x1 + beta * x1 * x2
-        dx2_dt = gamma * (1 - kappa * x2) * x2 - delta * x1 * x2
-        return [dx1_dt, dx2_dt]
+    def logistic_predator_prey(t, f, alpha, beta, gamma, delta, kappa):
+        x1, x2 = f
+        return [dx1_dt(x1, x2, alpha, beta, gamma, delta, kappa ), dx2_dt(x1, x2, alpha, beta, gamma, delta, kappa)]
 
     # Initial conditions
-    initial_conditions = [(5, 1), (1, 5)]
+    initial_conditions = [[5, 1], [1, 5]]
+    f0 = [5, 1]
     t_span = (0, 20)
     t_eval = np.linspace(0, 20, 2000)
-
+    params = (1.5, 1.1, 2.5, 1.4, 0.5)
+    print(initial_conditions[1])
     solutions = []
-    for z0 in initial_conditions:
-        sol = solve_ivp(logistic_predator_prey, t_span, z0, t_eval=t_eval, args=(1.5, 1.1, 2.5, 1.4, 0.5))
-        solutions.append(sol)
+    sol = solve_ivp(logistic_predator_prey, t_span, f0, t_eval=t_eval, args=params)
+    t = sol.t
+    x1 = sol.y[0]
+    x2 = sol.y[1]
+    plt.plot(t, x1)
+    plt.plot(t, x2)
+    # for i in initial_conditions:
+    #     sol = solve_ivp(logistic_predator_prey, t_span, f0, t_eval=t_eval, args=params)
+    #     solutions.append(sol)
 
-    return solutions
+    # return solutions
 
 def task_2c_phase_plane_and_trajectories(solutions):
     """
@@ -102,11 +103,11 @@ def task_3_component_curves(solutions):
 
 def main():
     # Execute each task sequentially
-    task_1_nullclines_and_equilibrium()
+    #task_1_nullclines_and_equilibrium()
     task_2a_vector_field()
     solutions = task_2b_solve_ode_system()
-    task_2c_phase_plane_and_trajectories(solutions)
-    task_3_component_curves(solutions)
+    #task_2c_phase_plane_and_trajectories(solutions)
+    #task_3_component_curves(solutions)
 
 if __name__ == "__main__":
     main()
