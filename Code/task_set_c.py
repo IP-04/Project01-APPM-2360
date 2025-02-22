@@ -22,10 +22,17 @@ def task_2a_vector_field():
     Region: 0 ≤ x1 ≤ 5, 0 ≤ x2 ≤ 5
     """
     params = (1.5, 1.1, 2.5, 1.4, 0.5)
-    x1 = np.arange(0, 5, 0.2)
-    x2 = np.arange(0, 5, 0.2)
+    x1 = np.arange(0, 5, 0.17)
+    x2 = np.arange(0, 5, 0.17)
+    plt.figure(figsize=(8, 6))
     vectorfield(dx1_dt, dx2_dt, x1, x2, params)
+    plt.xlabel("Predator population (x1)")
+    plt.ylabel("Prey population (x2)")
+    plt.title("Vector Field of Logistic Predator-Prey System")
+    plt.savefig("plots/task_c_vector_field.png")
     print("Task C.2(a) completed: Vector field plotted.")
+    return vectorfield(dx1_dt, dx2_dt, x1, x2, params)
+    
 
 def task_2b_solve_ode_system():
     """
@@ -39,12 +46,14 @@ def task_2b_solve_ode_system():
 
     # Initial conditions
     initial_conditions = [[5, 1], [1, 5]]
-    f0 = [5, 1]
     t_span = (0, 20)
     t_eval = np.linspace(0, 20, 2000)
     params = (1.5, 1.1, 2.5, 1.4, 0.5)
-    solutions = solve_ivp(logistic_predator_prey, t_span, f0, t_eval=t_eval, args=params)
-
+    
+    solutions = []
+    for i in range(len(initial_conditions)):
+        sol = solve_ivp(logistic_predator_prey, t_span, initial_conditions[i], t_eval=t_eval, args=params)
+        solutions.append(sol)
     return solutions
 
 def task_2c_phase_plane_and_trajectories(solutions):
@@ -58,12 +67,23 @@ def task_2c_phase_plane_and_trajectories(solutions):
     # **Plot phase plane setup using utils function (nullclines, vector field, equilibrium points)**
     params = (1.5, 1.1, 2.5, 1.4, 0.5)
     alpha, beta, gamma, delta, kappa = params
-    x1 = np.arange(0, 5, 0.2)
+    x1 = np.arange(-0.01, 5, 0.2)
     vnulls = [alpha/beta, 0]
-    hnulls = [kappa*(1-(x1*(delta/gamma))), 0]
+    hnulls = [(1/kappa)*(1-(x1*(delta/gamma))), 0]
+    eq_sols = [[0,0,0], [0,2,0], [(gamma/delta)*(1-(kappa*alpha)/beta), vnulls[0], 1]]
 
-    elements = (vnulls, hnulls)
-    plot_phase_plane2(elements, x1)
+    plt.figure(figsize=(8, 6))
+    plot_phase_plane2(vnulls, hnulls, eq_sols, x1, task_2a_vector_field)
+    solutions = task_2b_solve_ode_system()
+    labels = ["[5, 1]", "[1, 5]"]
+    colors = ["purple", "orange"]
+    for i in range(len(solutions)):
+        x1 = solutions[i].y[0]
+        x2 = solutions[i].y[1]
+        plt.plot(x1, x2, label=labels[i], color=colors[i])
+    plt.legend(loc="upper right")
+    plt.savefig("plots/task_c_phase_plane_and_traj.png")
+    plt.show()
     print("Task C.2(c) completed: Phase plane with trajectories and equilibrium points plotted.")
 
 def task_3_component_curves(solutions):
@@ -72,11 +92,17 @@ def task_3_component_curves(solutions):
     Discuss whether the solutions are periodic or show asymptotic behavior.
     """
     plt.figure(figsize=(10, 6))
+    solutions = task_2b_solve_ode_system()
 
     # Plot component curves for each initial condition
-    for i, sol in enumerate(solutions):
-        plt.plot(sol.t, sol.y[0], label=f"Predator x1(t), IC {i+1}", linestyle='--', color=f"C{i}")
-        plt.plot(sol.t, sol.y[1], label=f"Prey x2(t), IC {i+1}", linestyle='-', color=f"C{i}")
+    label1 = ["x1, IC [5,1]", "x1, IC [1,5]"]
+    label2 = ["x2, IC [5,1]", "x2, IC [1,5]"]
+    for i in range(len(solutions)):
+        t = solutions[i].t
+        x1 = solutions[i].y[0]
+        x2 = solutions[i].y[1]
+        plt.plot(t, x1, label=label1[i])
+        plt.plot(t, x2, label=label2[i])
 
     plt.xlabel("Time (t)")
     plt.ylabel("Population size")
@@ -97,7 +123,7 @@ def main():
     task_2a_vector_field()
     solutions = task_2b_solve_ode_system()
     task_2c_phase_plane_and_trajectories(solutions)
-    #task_3_component_curves(solutions)
+    task_3_component_curves(solutions)
 
 if __name__ == "__main__":
     main()
