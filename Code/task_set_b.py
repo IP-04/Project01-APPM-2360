@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
-from utils import plot_vector_field
-from sympy import symbols, solve
+from utils import vectorfield1, LV_dx1, LV_dx2, LV_system
 
+params = (1.5, 1.1, 2.5, 1.4)
 def task_1_classification():
     """
     Task B.1: Classify the Lotka-Volterra system (4).
@@ -16,166 +16,76 @@ def task_1_classification():
 
     print("Task B.1 completed: First-order, nonlinear, autonomous system.")
 
-def task_2_nullclines_and_equilibrium():
-    """
-    Task B.2: Analytically find the v and h nullclines and all equilibrium solutions of (4).
-    No specific parameter values should be used here.
-    """
-    # Nullclines are found by dx1/dt = 0 and dx2/dt = 0:
-    # v-nullclines: Set dx1/dt = -αx1 + βx1x2 = 0
-    # h-nullclines: Set dx2/dt = γx2 - δx1x2 = 0
-    
-    x1, x2, alpha, beta, gamma, delta = symbols('x1 x2 alpha beta gamma delta')
-    
-    # Define the equations for nullclines
-    v_nullcline_eq = -alpha * x1 + beta * x1 * x2
-    h_nullcline_eq = gamma * x2 - delta * x1 * x2
-
-    # Solve for nullclines
-    v_nullcline = solve(v_nullcline_eq, x2)
-    h_nullcline = solve(h_nullcline_eq, x2)
-
-    # Find equilibrium points by solving both equations
-    equilibrium_solutions = solve((v_nullcline_eq, h_nullcline_eq), (x1, x2))
-    
-    print("v-nullcline:", v_nullcline)
-    print("h-nullcline:", h_nullcline)
-    print("Equilibrium solutions:", equilibrium_solutions)
-    
-    print("Task B.2 completed: Nullclines identified and equilibrium solutions derived.")
-    
-    return v_nullcline, h_nullcline, equilibrium_solutions
+def task_2_nullclines_and_equilibrium(params):
+    #hnulls: x2 = 0 and x1 = gamma/delta
+    #vnulls: x1 = 0 and x2 = alpha/beta
+    a, b, g, d = params
+    #h-nulls:
+    plt.axhline(y=0, color="blue", )
+    plt.axvline(x=g/d, color="blue", label="h-nullcline")
+    #v-nulls:
+    plt.axhline(y=a/b, color="red")
+    plt.axvline(x=0, color="red", label="v-nullcline")
+    plt.xlim(-0.01, 5)
+    plt.ylim(-0.01, 5)
 
 # Plotting functions for vector field and phase plane
-def plot_vector_field2(params, x_range, y_range):
-    alpha, beta, gamma, delta = params['alpha'], params['beta'], params['gamma'], params['delta']
-    x1 = np.linspace(x_range[0], x_range[1], 20)
-    x2 = np.linspace(y_range[0], y_range[1], 20)
-    X1, X2 = np.meshgrid(x1, x2)
-    dx1_dt = -alpha * X1 + beta * X1 * X2
-    dx2_dt = gamma * X2 - delta * X1 * X2
-
-    plt.quiver(X1, X2, dx1_dt, dx2_dt)
-    plt.xlabel('x1')
-    plt.ylabel('x2')
-    plt.title('Vector Field')
-    plt.xlim(x_range)
-    plt.ylim(y_range)
-    plt.grid()
-    plt.show()
-    
-def plot_phase_plane(params):
-    v_nullcline, h_nullcline, equilibrium_solutions = task_2_nullclines_and_equilibrium()
-    alpha, beta, gamma, delta = params['alpha'], params['beta'], params['gamma'], params['delta']
-    
-    x1 = np.linspace(0, 5, 400)
-    x2_v_nullcline = [v_nullcline[0].subs({'alpha': alpha, 'beta': beta, 'x1': x}) for x in x1]
-    x2_h_nullcline = [h_nullcline[0].subs({'gamma': gamma, 'delta': delta, 'x1': x}) for x in x1]
-
-    plt.figure(figsize=(8, 6))
-    plt.plot(x1, x2_v_nullcline, label='v-nullcline')
-    plt.plot(x1, x2_h_nullcline, label='h-nullcline')
-
-    for sol in equilibrium_solutions:
-        x1_eq = sol[0].evalf(subs={'alpha': alpha, 'beta': beta, 'gamma': gamma, 'delta': delta})
-        x2_eq = sol[1].evalf(subs={'alpha': alpha, 'beta': beta, 'gamma': gamma, 'delta': delta})
-        plt.plot(x1_eq, x2_eq, 'ro')  # Equilibrium points
-
-    plt.xlabel('x1')
-    plt.ylabel('x2')
-    plt.title('Phase Plane')
-    plt.legend()
-    plt.grid()
-    plt.savefig("plots/task_b_phase_plane.png")
-    plt.show()
-
-def task_3_vector_field_and_phase_plane():
-    """
-    Task B.3: Assign parameter values and compute the vector field and phase plane.
-    - Parameters: α = 1.5, β = 1.1, γ = 2.5, δ = 1.4
-    - Vector field region: 0 ≤ x1 ≤ 5, 0 ≤ x2 ≤ 5
-    """
-    # Parameters
-    params = {
-        'alpha': 1.5,
-        'beta': 1.1,
-        'gamma': 2.5,
-        'delta': 1.4
-    }
-
-    # Compute and plot the vector field (modified for this task)
-    plot_vector_field2(params, x_range=(0, 5), y_range=(0, 5))
-
-    
-    # Generate the phase plane plot (including nullclines and equilibrium points)
-    plot_phase_plane(params)
+def plot_vector_field2():
+    x1 = np.arange(0, 5, 0.2)
+    x2 = np.arange(0, 5, 0.2)
+    params = (1.5, 1.1, 2.5, 1.4)
+    return vectorfield1(LV_dx1, LV_dx2, x1, x2, params)
 
 def task_3b_solve_ode_system():
-    """
-    Task B.3(b): Use a numerical ODE solver to simulate the Lotka-Volterra system.
-    - Initial condition: x1(0) = 0.5, x2(0) = 1.0
-    - Time interval: t ∈ [0, 20], step size h = 0.01
-    """
-    # Define the Lotka-Volterra system as a function
-    def lotka_volterra(t, z, alpha, beta, gamma, delta):
-        x1, x2 = z
-        dx1_dt = -alpha * x1 + beta * x1 * x2
-        dx2_dt = gamma * x2 - delta * x1 * x2
-        return [dx1_dt, dx2_dt]
+    t_span = [0, 20]
+    t_eval = np.arange(0, 20, 0.01)
+    f0 = [0.5, 1]
+    sol = solve_ivp(LV_system, t_span, f0, t_eval=t_eval, args=params)
+    t = sol.t
+    x1_sol = sol.y[0]
+    x2_sol = sol.y[1]
+    return (x1_sol, x2_sol, t)
 
-    # Initial conditions and time span
-    t_span = (0, 20)
-    t_eval = np.linspace(0, 20, 2000)  # Stepsize of approx 0.01
-    z0 = [0.5, 1.0]  # Initial conditions
-
-    # Solve the system using solve_ivp
-    sol = solve_ivp(lotka_volterra, t_span, z0, t_eval=t_eval, args=(1.5, 1.1, 2.5, 1.4))
-
-    # Plot the trajectory in the phase plane
-    plt.plot(sol.y[0], sol.y[1], label="Trajectory: (x1(0), x2(0)) = (0.5, 1.0)")
-    plt.xlabel("Predator population (x1)")
-    plt.ylabel("Prey population (x2)")
-    plt.title("Phase Plane Trajectory")
-    plt.legend()
-    plt.grid(True)
+def plot_phase_plane(params):
+    plt.figure(figsize=(8, 6))
+    a, b, g, d = params
+    task_2_nullclines_and_equilibrium(params)
+    plot_vector_field2()
+    x1, x2, t = task_3b_solve_ode_system()
+    eq_sols = [[g/d, a/b], [0, 0]]
+    plt.plot(x1, x2, label="(x1(t), x2(t)) Trajectory", color="purple")
+    for i in range(len(eq_sols)):
+        x_points = eq_sols[i][0]
+        y_points = eq_sols[i][1]
+        if i == 0:
+            plt.plot(x_points, y_points, marker="o", markerfacecolor='none', markeredgecolor='#39FF14', markeredgewidth=2, label="Unstable Eq. Pt.")
+        plt.plot(x_points, y_points, marker="o", markerfacecolor='none', markeredgecolor='#39FF14', markeredgewidth=2)
+    plt.title("Lotka-Volterra System With I.C. (0.5, 1.0)")
+    plt.xlabel("x1(t) (Dozens of Predators)")
+    plt.ylabel("x2(t) (Dozens of Prey)")
+    plt.legend(loc="upper right", fontsize="7.5")
+    plt.grid()
     plt.savefig("plots/task_b_phase_plane_trajectory.png")
     plt.show()
-    
-    return sol
 
 def task_4_component_curves():
-    """
-    Task B.4: Plot the component curves x1(t) and x2(t) against t.
-    Discuss whether they are in phase or out of phase and what this means.
-    """
-     # Solve the ODE system to get the solution
-    sol = task_3b_solve_ode_system()
-    
-    # Plot x1(t) and x2(t) from the ODE solver solution
-    t, x1, x2 = sol.t, sol.y[0], sol.y[1]
-
     plt.figure(figsize=(8, 6))
-    plt.plot(t, x1, label="Predator population x1(t)", color='r')
-    plt.plot(t, x2, label="Prey population x2(t)", color='b')
-    plt.xlabel("Time (t)")
-    plt.ylabel("Population size")
-    plt.title("Component Curves: Predator and Prey Populations Over Time")
-    plt.legend()
-    plt.grid(True)
+    x1, x2, t = task_3b_solve_ode_system()
+    plt.plot(t, x1, label="x1(t)", color="purple")
+    plt.plot(t, x2, label="x2(t)", color="orange")
+    plt.title("Lotka-Volterra Component Curves")
+    plt.xlabel("Time (yrs)")
+    plt.ylabel("Population (Dozens of Animals)")
+    plt.legend(loc="upper right", fontsize="7.5")
+    plt.ylim(0, 5.3)
+    plt.grid()
     plt.savefig("plots/task_b_component_curves.png")
     plt.show()
-
-    # Phase relationship
-    print("Task B.4 discussion:")
-    print(" If the curves are in phase, peaks in predator and prey populations occur at the same time.")
-    print("If they are out of phase, predator peaks follow prey peaks, which is typically the case in predator-prey systems.")
 
 def main():
     # Execute each task sequentially
     task_1_classification()
-    task_2_nullclines_and_equilibrium()
-    task_3_vector_field_and_phase_plane()
-    task_3b_solve_ode_system()
+    plot_phase_plane(params)
     task_4_component_curves()
 
 
