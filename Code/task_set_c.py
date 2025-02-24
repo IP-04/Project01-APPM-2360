@@ -39,7 +39,8 @@ def task_2c_phase_plane_and_trajectories(params):
     a, b, g, d, k = params
     task_1_nullclines_and_equilibrium(params)
     task_2a_vector_field()
-    eq_sols = [[0,0,"unstable"], [0,2,"unstable"], [(g/d)*(1-(k*a)/b), a/b, "stable"]]
+    stable_eq_sols = [(g/d)*(1-(k*a)/b), a/b, "stable"]
+    unstable_eq_sols = [[0,0,"unstable"], [0,2,"unstable"]]
 
     solutions = task_2b_solve_ode_system()
     labels = ["I.C. [5, 1] Trajectory", "I.C. [1, 5] Trajectory"]
@@ -49,14 +50,18 @@ def task_2c_phase_plane_and_trajectories(params):
         x2 = solutions[i].y[1]
         plt.plot(x1, x2, label=labels[i], color=colors[i])
 
-    for i in range(len(eq_sols)):
-        if eq_sols[i][2] == "stable":
-            x_points = eq_sols[i][0]
-            y_points = eq_sols[i][1]
-            plt.plot(x_points, y_points, color='#39FF14', marker="o")
-        x_points = eq_sols[i][0]
-        y_points = eq_sols[i][1]
+    for i in range(len(unstable_eq_sols)):
+        if i == 0:
+            x_points = unstable_eq_sols[i][0]
+            y_points = unstable_eq_sols[i][1]
+            plt.plot(x_points, y_points, marker="o", markerfacecolor='none', markeredgecolor='#39FF14', markeredgewidth=2, label="Unstable Eq. Pt.")
+        x_points = unstable_eq_sols[i][0]
+        y_points = unstable_eq_sols[i][1]
         plt.plot(x_points, y_points, marker="o", markerfacecolor='none', markeredgecolor='#39FF14', markeredgewidth=2)
+    x_points = stable_eq_sols[0]
+    y_points = stable_eq_sols[1]
+    plt.plot(x_points, y_points, marker="o", label="Stable Eq. Pt.", color='#39FF14')
+        
     plt.title("Logistic Predator-Prey System With Differing I.C.'s")
     plt.xlabel("x1(t) (Dozens of Predators)")
     plt.ylabel("x2(t) (Dozens of Prey)")
