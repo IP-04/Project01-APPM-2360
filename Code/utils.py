@@ -37,6 +37,7 @@ def plot_solutions(t_exact, x_exact, solutions, h_values):
     plt.savefig("plots/task_a_plot.png")
     plt.show()
 
+# Set B, Task 5: harvesting function
 def harvesting_function(x, p, q):
         return (p * x**2) / (q + x**2)
 
