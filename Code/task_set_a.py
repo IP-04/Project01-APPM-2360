@@ -154,7 +154,7 @@ def task_6_equilibrium_solutions_and_euler():
         ax.axhline(y=roots[i], color='#39FF14', linestyle="dashed")
 
     x = np.arange(0, 30, 2.5)
-    y = np.arange(0, 7, .3)
+    y = np.arange(0, 7, .25)
     dirfield(fxt, x, y)
     
     plt.savefig("plots/task_a_harvesting_with_dirfield.png")
