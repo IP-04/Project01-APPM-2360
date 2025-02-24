@@ -36,6 +36,7 @@ def plot_vector_field2():
     params = (1.5, 1.1, 2.5, 1.4)
     return vectorfield1(LV_dx1, LV_dx2, x1, x2, params)
 
+# Task B.3: Solve the Lotka-Volterra system using solve_ivp
 def task_3b_solve_ode_system():
     t_span = [0, 20]
     t_eval = np.arange(0, 20, 0.01)
@@ -46,6 +47,7 @@ def task_3b_solve_ode_system():
     x2_sol = sol.y[1]
     return (x1_sol, x2_sol, t)
 
+# and plot the phase plane with trajectories
 def plot_phase_plane(params):
     plt.figure(figsize=(8, 6))
     a, b, g, d = params
@@ -65,9 +67,15 @@ def plot_phase_plane(params):
     plt.ylabel("x2(t) (Dozens of Prey)")
     plt.legend(loc="upper right", fontsize="7.5")
     plt.grid()
+    
+    #Padding
+    plt.xlim(-0.5, 5.5)
+    plt.ylim(-0.5, 5.5)
+    
     plt.savefig("plots/task_b_phase_plane_trajectory.png")
     plt.show()
 
+# Task B.4: Plot the component curves of the Lotka-Volterra system
 def task_4_component_curves():
     plt.figure(figsize=(8, 6))
     x1, x2, t = task_3b_solve_ode_system()

@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 from utils import vectorfield, LPP_dx1, LPP_dx2, LPP_system
+
 params = (1.5, 1.1, 2.5, 1.4, 0.5)
 
 def task_1_nullclines_and_equilibrium(params):
@@ -67,6 +68,10 @@ def task_2c_phase_plane_and_trajectories(params):
     plt.ylabel("x2(t) (Dozens of Prey)")
     plt.legend(loc="upper right")
     plt.grid(True)
+    #Padding
+    plt.xlim(-0.3, 5.3)
+    plt.ylim(-0.3, 5.3)
+    
     plt.savefig("plots/task_c_phase_plane_trajectory.png")
     plt.show()
 
