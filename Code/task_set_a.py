@@ -60,6 +60,7 @@ def plot_absolute_error(t_exact, x_exact, solutions, h_values):
 
     for (t_num, x_num), h in zip(solutions, h_values):
         error = np.abs(np.interp(t_num, t_exact, x_exact) - x_num)
+        print(error[-1])
         plt.semilogy(t_num, error, label=f"h = {h}")
 
     plt.xlabel("Time (years)")
@@ -94,10 +95,10 @@ def task_5_behavior_of_harvesting_function():
         y = harvesting_function(x_values, p, q)
         plt.plot(x_values, y, label=f"p = {p}, q = {q}")
 
-    plt.xlabel("Deer Population (x)")
-    plt.ylabel("Harvesting Rate H(x)")
-    plt.title("Behavior of Harvesting Function H(x)", fontweight='bold')
-    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.xlabel("x(t), Deer Population (dozens)")
+    plt.ylabel("H(x), Deer Harvested (dozens)")
+    plt.title("Behavior of Harvesting Function H(x)")
+    plt.legend(loc='upper left', fontsize="7.5")
     plt.grid(True, linestyle='--', linewidth=0.5)
     plt.savefig("plots/task_a_harvesting_function.png", dpi=300, bbox_inches='tight')
     plt.show()
