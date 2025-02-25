@@ -103,6 +103,8 @@ def task_5_behavior_of_harvesting_function():
     plt.savefig("plots/task_a_harvesting_function.png", dpi=300, bbox_inches='tight')
     plt.show()
 
+    
+
 def task_6_equilibrium_solutions_and_euler():
     """
     Task A.6: Analyze the logistic equation with harvesting and solve using Euler’s method.
