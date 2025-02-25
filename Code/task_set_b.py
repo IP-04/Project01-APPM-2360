@@ -38,8 +38,8 @@ def plot_vector_field2():
 
 # Task B.3: Solve the Lotka-Volterra system using solve_ivp
 def task_3b_solve_ode_system():
-    t_span = [0, 20]
-    t_eval = np.arange(0, 20, 0.01)
+    t_span = [0, 3.8]
+    t_eval = np.arange(0, 3.8, 0.01)
     f0 = [0.5, 1]
     sol = solve_ivp(LV_system, t_span, f0, t_eval=t_eval, args=params)
     t = sol.t
@@ -60,8 +60,8 @@ def plot_phase_plane(params):
         x_points = eq_sols[i][0]
         y_points = eq_sols[i][1]
         if i == 0:
-            plt.plot(x_points, y_points, marker="o", markerfacecolor='none', markeredgecolor='#39FF14', markeredgewidth=2, label="Unstable Eq. Pt.")
-        plt.plot(x_points, y_points, marker="o", markerfacecolor='none', markeredgecolor='#39FF14', markeredgewidth=2)
+            plt.plot(x_points, y_points, marker="o", markerfacecolor='none', markeredgecolor='#39FF14', markeredgewidth=2.5, label="Unstable Eq. Pt.")
+        plt.plot(x_points, y_points, marker="o", markerfacecolor='none', markeredgecolor='#39FF14', markeredgewidth=2.5)
     plt.title("Lotka-Volterra System With I.C. (0.5, 1.0)")
     plt.xlabel("x1(t) (Dozens of Predators)")
     plt.ylabel("x2(t) (Dozens of Prey)")
@@ -76,9 +76,11 @@ def plot_phase_plane(params):
     plt.show()
 
 # Task B.4: Plot the component curves of the Lotka-Volterra system
+
+
 def task_4_component_curves():
     plt.figure(figsize=(8, 6))
-    x1, x2, t = task_3b_solve_ode_system()
+    x1, x2, t = task_4b_solve_ode_system()
     plt.plot(t, x1, label="x1(t)", color="purple")
     plt.plot(t, x2, label="x2(t)", color="orange")
     plt.title("Lotka-Volterra Component Curves")
@@ -89,6 +91,16 @@ def task_4_component_curves():
     plt.grid()
     plt.savefig("plots/task_b_component_curves.png")
     plt.show()
+    
+def task_4b_solve_ode_system():
+    t_span = [0, 20]
+    t_eval = np.arange(0, 20, 0.01)
+    f0 = [0.5, 1]
+    sol = solve_ivp(LV_system, t_span, f0, t_eval=t_eval, args=params)
+    t = sol.t
+    x1_sol = sol.y[0]
+    x2_sol = sol.y[1]
+    return (x1_sol, x2_sol, t)
 
 def main():
     # Execute each task sequentially
