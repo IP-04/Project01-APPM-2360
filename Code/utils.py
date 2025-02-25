@@ -46,6 +46,7 @@ def dirfield(f, X, Y):
     dxu = dx/norm
 
     plt.quiver(x,y,dxu,dyu, width=0.002)
+    plt.grid(True)
     plt.show()
     
 # Task B.1: Differential equation for x1 in the Lotka-Volterra system
